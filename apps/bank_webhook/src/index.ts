@@ -2,6 +2,7 @@ import express from "express"
 import db from "@repo/db/client"
 
 const app=express()
+app.use(express.json())
 
 
 app.post("/hdfc",async(req,res)=>{
@@ -17,14 +18,19 @@ app.post("/hdfc",async(req,res)=>{
 
     try {
         await db.$transaction([
-            db.balance.updateMany({
+            db.balance.upsert({
                 where:{
                     userId:Number(paymentInformation.userId)
                 },
-                data:{
+                update:{
                     amount:{
-                        increment: Number(paymentInformation.amount)
+                        increment:Number(paymentInformation.amount)
                     }
+                },
+                create:{
+                    amount:Number(paymentInformation.amount),
+                    userId:Number(paymentInformation.userId),
+                    locked:0
                 }
             }),
             db.onRanmpTransactions.updateMany({
@@ -41,8 +47,10 @@ app.post("/hdfc",async(req,res)=>{
             message:"Captured"
         })
     } catch (error) {
+
         res.status(411).json({
-            message: "Error while processing webhook"
+            message: "Error while processing webhook",
+            error
         })
     }
 })
