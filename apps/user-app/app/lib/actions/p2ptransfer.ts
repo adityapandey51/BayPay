@@ -57,6 +57,15 @@ export const p2pTransfer= async (phone:string, value:number) => {
                     }
                 }
               })
+
+              await txn.p2pTransfer.create({
+                data:{
+                    amount:value,
+                    timestamp:new Date(),
+                    fromUserId: Number(session.user.id),
+                    toUserId: toUser.id
+                }
+              })
        }) 
 
        return {

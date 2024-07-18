@@ -2,7 +2,7 @@
 import prisma from "@repo/db/client";
 import { AddMoney } from "../../../components/AddmoneyCard";
 import { BalanceCard } from "../../../components/BalanceCard";
-import { OnRampTransactions } from "../../../components/OnRampTransactions";
+import { Transactions } from "../../../components/Transactions";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../../lib/auth";
 import { redirect } from "next/navigation";
@@ -57,9 +57,11 @@ export default async function(){
             <div>
                 <BalanceCard amount={balance.amount} locked={balance.locked} />
                 <div className="pt-4">
-                    <OnRampTransactions transactions={transactions} />
+                    <Transactions transactions={transactions} title="Wallet Topups" />
                 </div>
             </div>
         </div>
     </div>
 }
+
+export const dynamic = "force-dynamic";
